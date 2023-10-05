@@ -18,7 +18,8 @@ val presentationModule = module {
         AddCocktailViewModel(
             getCocktailUseCase = get(),
             addNewCocktailUseCase = get(),
-            editCocktailUseCase = get()
+            editCocktailUseCase = get(),
+            getNetworkCocktailUseCase = get()
         )
     }
 

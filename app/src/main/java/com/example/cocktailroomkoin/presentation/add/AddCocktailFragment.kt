@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.cocktailroomkoin.R
 import com.example.cocktailroomkoin.databinding.FragmentAddCocktailBinding
 import com.example.cocktailroomkoin.domain.models.Cocktail
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -31,6 +32,19 @@ class AddCocktailFragment : Fragment() {
     private var uri : String = ""
     private lateinit var cocktail: Cocktail
 
+    val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()){
+        var requestOptions = RequestOptions()
+        requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(54))
+
+        Glide.with(requireContext())
+            .load(it)
+            .apply(requestOptions)
+            .into(binding.imageButton)
+        if (it != null){
+            viewModel.saveUri(it)
+            uri = it.toString()
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,25 +73,16 @@ class AddCocktailFragment : Fragment() {
             binding.buttonSave.setOnClickListener { saveCocktail(cocktailId) }
 
         } else {
+            viewModel.cocktail.observe(viewLifecycleOwner) {
+                bindViews(it)
+            }
             binding.buttonSave.setOnClickListener { saveCocktail(cocktailId) }
         }
 
-        val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()){
-            var requestOptions = RequestOptions()
-            requestOptions = requestOptions.transforms(CenterCrop(), RoundedCorners(54))
 
-            Glide.with(requireContext())
-                .load(it)
-                .apply(requestOptions)
-                .into(binding.imageButton)
-            if (it != null){
-                viewModel.saveUri(it)
-                uri = it.toString()
-            }
-        }
 
         binding.imageButton.setOnClickListener {
-            pickImage.launch("image/*")
+           showDialog()
         }
 
         binding.buttonCancel.setOnClickListener { findNavController().navigateUp() }
@@ -200,6 +205,22 @@ class AddCocktailFragment : Fragment() {
 
         }
 
+    }
+
+    private fun showDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Select source")
+            .setMessage("Select where to get image")
+            .setCancelable(false)
+            .setNegativeButton("Local") { _, _ ->
+
+                pickImage.launch("image/*")
+            }
+            .setPositiveButton("Internet") { _, _ ->
+                viewModel.getCocktail()
+
+            }
+            .show()
     }
 
 }

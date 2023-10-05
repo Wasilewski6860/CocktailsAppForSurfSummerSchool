@@ -5,6 +5,7 @@ import com.example.cocktailroomkoin.domain.use_cases.DeleteCocktailUseCase
 import com.example.cocktailroomkoin.domain.use_cases.EditCocktailUseCase
 import com.example.cocktailroomkoin.domain.use_cases.GetAllCocktailsUseCase
 import com.example.cocktailroomkoin.domain.use_cases.GetCocktailUseCase
+import com.example.cocktailroomkoin.domain.use_cases.GetNetworkCocktailUseCase
 import org.koin.dsl.module
 
 val domainModule = module {
@@ -14,4 +15,5 @@ val domainModule = module {
     factory<EditCocktailUseCase> { EditCocktailUseCase(storageRepository = get()) }
     factory<GetAllCocktailsUseCase> { GetAllCocktailsUseCase(storageRepository = get()) }
     factory<GetCocktailUseCase> { GetCocktailUseCase(storageRepository = get()) }
+    factory<GetNetworkCocktailUseCase> { GetNetworkCocktailUseCase(cocktailRepository = get()) }
 }

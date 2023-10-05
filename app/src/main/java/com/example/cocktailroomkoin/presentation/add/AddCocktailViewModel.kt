@@ -9,12 +9,14 @@ import com.example.cocktailroomkoin.domain.models.Cocktail
 import com.example.cocktailroomkoin.domain.use_cases.AddNewCocktailUseCase
 import com.example.cocktailroomkoin.domain.use_cases.EditCocktailUseCase
 import com.example.cocktailroomkoin.domain.use_cases.GetCocktailUseCase
+import com.example.cocktailroomkoin.domain.use_cases.GetNetworkCocktailUseCase
 import kotlinx.coroutines.launch
 
 class AddCocktailViewModel(
     private val addNewCocktailUseCase: AddNewCocktailUseCase,
     private val editCocktailUseCase: EditCocktailUseCase,
-    private val getCocktailUseCase: GetCocktailUseCase
+    private val getCocktailUseCase: GetCocktailUseCase,
+    private val getNetworkCocktailUseCase: GetNetworkCocktailUseCase
 ) : ViewModel() {
 
     private val _cocktail = MutableLiveData<Cocktail>()
@@ -53,6 +55,12 @@ class AddCocktailViewModel(
     fun getCocktail(id: Int) {
         viewModelScope.launch {
             _cocktail.value = getCocktailUseCase.execute(id)
+        }
+    }
+
+    fun getCocktail() {
+        viewModelScope.launch {
+            _cocktail.value = getNetworkCocktailUseCase.execute()
         }
     }
 
